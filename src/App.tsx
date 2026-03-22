@@ -1,35 +1,75 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {useState} from 'react';
+
+
+import Login from './Components/Login';
+import Layout from './Components/Layout';
+import Home from './Components/Home';
+
+import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [user, setUser] = useState<User>();
+
+
+  
+  /**
+   *  This function will be passed to the login and app to allow for users to login and logout
+   * @param isAuth a boolean on if the user is authenticated
+   * @param user  the user to login our out
+   */
+  const loginCallback = (isAuth: boolean, user: User) => {
+      if (isAuth === loggedIn) return;
+
+      setLoggedIn(isAuth);
+      setUser(user);
+  }
+
+  /**
+   * This function will be called to log a user out
+   */
+  const logoutCallback = () => {
+    setLoggedIn(false);
+    setUser(undefined);
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+              !loggedIn ? (
+                  <Login login={loginCallback} />
+              ) :  (
+                  <Navigate to="/home" />
+              )
+          }
+        />
+
+          <Route path="/home" element={<Layout logout={logoutCallback} />}>
+              <Route index element={<Home user={user!}/>} />
+              <Route path="*" element={
+                <div>
+                  <NavLink className="bg-amber-600"
+                    to="/"
+                    >Path not found :( Click Me!
+                  </NavLink>
+                </div>
+              }>
+              </Route>      
+
+
+            
+          </Route>
+      
+            
+                    
+          </Routes>
+      </Router>
+         
+  );
 }
 
 export default App
