@@ -9,6 +9,9 @@ declare global {
         MISC
     }
 
+
+
+
     type Transaction = {
         transactionName: string;
         transactionCategory: Category;
@@ -20,6 +23,12 @@ declare global {
         username: string;
         password: string;
         transactions: Transaction[];
+    }
+
+    type Account = {
+        amount: number;
+        accountNumber: string;
+        bank: "Truist" | "Ally" | "Bank of America" | "Wells Fargo" | "Other"
     }
 }
  

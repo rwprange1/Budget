@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL: string = "/api/user";
+const BASE_URL: string = "http://localhost:8080/api/user";
 
 /**
  * Given a username this function returns a promise

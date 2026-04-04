@@ -5,13 +5,14 @@ import Login from './Components/Login';
 import Layout from './Components/Layout';
 import Home from './Components/Home';
 
+import { UserContext } from './userContext';
+
 import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [loggedIn, setLoggedIn] = useState<boolean>(true);
   const [user, setUser] = useState<User>();
-
 
   
   /**
@@ -24,6 +25,7 @@ function App() {
 
       setLoggedIn(isAuth);
       setUser(user);
+      
   }
 
   /**
@@ -34,22 +36,21 @@ function App() {
     setUser(undefined);
   }
 
+  if (!loggedIn){
+    return <Login login={loginCallback}/>
+  }
+
+
+
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={
-              !loggedIn ? (
-                  <Login login={loginCallback} />
-              ) :  (
-                  <Navigate to="/home" />
-              )
-          }
-        />
-
           <Route path="/home" element={<Layout logout={logoutCallback} />}>
-              <Route index element={<Home user={user!}/>} />
+              <Route index element={
+                <UserContext value={user} >
+                  {<Home/>}
+                </UserContext>}>
+              </Route>
               <Route path="*" element={
                 <div>
                   <NavLink className="bg-amber-600"
@@ -59,13 +60,7 @@ function App() {
                 </div>
               }>
               </Route>      
-
-
-            
           </Route>
-      
-            
-                    
           </Routes>
       </Router>
          
